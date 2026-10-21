@@ -12,7 +12,7 @@ configurable value is a variable that you fill in via `terraform.tfvars`.
 | Layer | Resources |
 | :--- | :--- |
 | Network | 1 VPC, 1 subnet |
-| Security | 1 security group + rules (internal VPC traffic, SSH, RDP, egress) |
+| Security | 2 security groups (dataBase-sg + ldap-sg) with explicit port rules |
 | Storage | 2 SFS Turbo file systems |
 | Compute | 6 ECS instances (static private IPs) |
 | VPN | 2 public EIPs + 1 VPN gateway |
@@ -29,7 +29,7 @@ terraform_RPA/
 ├── terraform.tfvars.example    # Copy to terraform.tfvars and fill in values
 └── modules/
     ├── network/                # VPC + subnet
-    ├── security/               # security group + rules
+    ├── security/               # 2 security groups (database + ldap) + rules
     ├── storage/                # SFS Turbo instances
     ├── compute/                # ECS instances
     └── vpn/                    # EIPs + VPN gateway
@@ -119,9 +119,15 @@ You can provide credentials in either of two ways:
   characters, and contain only letters, digits, hyphens, and underscores (no
   spaces or special characters like `&`). A variable validation rule catches
   invalid names at `terraform plan` time.
-- **Security group**: default rules are deleted (`delete_default_rules = true`)
-  so all rules are managed explicitly by Terraform (internal VPC ingress, egress,
-  SSH, and RDP).
+- **Security groups**: two security groups are created — `dataBase-sg` (assigned
+  to all ECS instances except LDAP) and `ldap-sg` (assigned to the instance whose
+  name is `LDAP`). Default rules are deleted (`delete_default_rules = true`) so
+  all rules are managed explicitly. Both groups have: all egress, SSH (TCP 22)
+  from a configurable CIDR, and full intra-group communication. `dataBase-sg`
+  additionally allows database service ports (3306, 3307, 3308, 3316, 33060,
+  33070, 33080, 27017, 5432, 6379, 6380) and NFS (2049) from the VPC.
+  `ldap-sg` allows LDAP (389) from the VPC and ICMP from anywhere. Port rules
+  follow `sg-ports.md`. The SFS Turbo file systems use `dataBase-sg`.
 
 ## Reference documentation
 

@@ -30,8 +30,13 @@ variable "subnet_id" {
   type        = string
 }
 
-variable "security_group_id" {
-  description = "ID of the security group."
+variable "database_security_group_id" {
+  description = "ID of the database security group (assigned to all instances except LDAP)."
+  type        = string
+}
+
+variable "ldap_security_group_id" {
+  description = "ID of the LDAP security group (assigned to instances whose name is 'LDAP')."
   type        = string
 }
 

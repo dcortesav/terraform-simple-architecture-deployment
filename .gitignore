@@ -3,6 +3,7 @@
 .terraform.lock.hcl
 
 huawei_cloud_terraform_specification.md
+sg-ports.md
 
 # State files
 *.tfstate

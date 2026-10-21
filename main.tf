@@ -29,19 +29,20 @@ module "network" {
 }
 
 # -----------------------------------------------------------------------------
-# Security: application security group + rules
+# Security: two security groups (database + ldap) + rules
 # -----------------------------------------------------------------------------
 module "security" {
   source = "./modules/security"
 
-  security_group_name        = var.security_group_name
-  security_group_description = var.security_group_description
-  vpc_cidr                   = module.network.vpc_cidr
+  database_sg_name        = var.database_sg_name
+  database_sg_description = var.database_sg_description
+  ldap_sg_name            = var.ldap_sg_name
+  ldap_sg_description     = var.ldap_sg_description
+
+  vpc_cidr = module.network.vpc_cidr
 
   enable_ssh      = var.enable_ssh
   ssh_source_cidr = var.ssh_source_cidr
-  enable_rdp      = var.enable_rdp
-  rdp_source_cidr = var.rdp_source_cidr
 
   tags = local.common_tags
 }
@@ -56,7 +57,7 @@ module "storage" {
 
   vpc_id            = module.network.vpc_id
   subnet_id         = module.network.subnet_id
-  security_group_id = module.security.security_group_id
+  security_group_id = module.security.database_security_group_id
 
   availability_zones = data.huaweicloud_availability_zones.available.names
 
@@ -74,8 +75,9 @@ module "compute" {
   ecs_instances       = var.ecs_instances
   ecs_admin_passwords = var.ecs_admin_passwords
 
-  subnet_id         = module.network.subnet_id
-  security_group_id = module.security.security_group_id
+  subnet_id                  = module.network.subnet_id
+  database_security_group_id = module.security.database_security_group_id
+  ldap_security_group_id     = module.security.ldap_security_group_id
 
   availability_zones = data.huaweicloud_availability_zones.available.names
 

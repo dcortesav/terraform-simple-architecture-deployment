@@ -39,18 +39,20 @@ subnet_gateway_ip = "" # e.g. 172.70.7.1
 
 ###############################################################################
 # Security
+#   Two security groups: dataBase-sg (database instances) and ldap-sg (LDAP).
+#   Port rules are defined in sg-ports.md. SSH (22) is open on both.
 ###############################################################################
 
-security_group_name        = "" # e.g. sg-default
-security_group_description = "" # e.g. Application security group
+database_sg_name        = "" # e.g. dataBase-sg
+database_sg_description = "" # e.g. Security group for database instances
+
+ldap_sg_name        = "" # e.g. ldap-sg
+ldap_sg_description = "" # e.g. Security group for LDAP instance
 
 enable_ssh = true
 # Source CIDR for SSH ingress. Defaults to 0.0.0.0/0 (allow from anywhere) when
 # not set; set a narrower CIDR to restrict access.
 # ssh_source_cidr = "0.0.0.0/0"
-
-enable_rdp = true
-# rdp_source_cidr = "0.0.0.0/0"
 
 ###############################################################################
 # Storage (SFS Turbo)  -- 2 file systems

@@ -22,9 +22,14 @@ output "subnet_availability_zone" {
   value       = module.network.subnet_availability_zone
 }
 
-output "security_group_id" {
-  description = "ID of the application security group."
-  value       = module.security.security_group_id
+output "database_security_group_id" {
+  description = "ID of the database security group."
+  value       = module.security.database_security_group_id
+}
+
+output "ldap_security_group_id" {
+  description = "ID of the LDAP security group."
+  value       = module.security.ldap_security_group_id
 }
 
 output "sfs_turbo_ids" {

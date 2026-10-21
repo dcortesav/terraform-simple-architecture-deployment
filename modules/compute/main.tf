@@ -47,7 +47,9 @@ resource "huaweicloud_compute_instance" "this" {
   system_disk_type = each.value.system_disk_type
   system_disk_size = each.value.system_disk_size
 
-  security_group_ids = [var.security_group_id]
+  security_group_ids = [
+    lower(each.value.name) == "ldap" ? var.ldap_security_group_id : var.database_security_group_id
+  ]
 
   network {
     uuid        = var.subnet_id
