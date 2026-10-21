@@ -1,0 +1,174 @@
+###############################################################################
+# terraform.tfvars.example
+#
+# Copy this file to terraform.tfvars and fill in the values for your
+# environment. Every field below is intentionally left blank so you can
+# add the proper value later.
+#
+#   cp terraform.tfvars.example terraform.tfvars
+###############################################################################
+
+###############################################################################
+# Provider / Global
+###############################################################################
+
+# API credentials. Alternatively, export HW_ACCESS_KEY / HW_SECRET_KEY and
+# leave these two commented out.
+access_key = ""
+secret_key = ""
+
+region      = "" # e.g. la-north-2
+project_id  = "" # target project / enterprise project ID
+environment = "" # e.g. production
+
+tags = {
+  # Project = "RPA"
+  # Owner   = "your-team"
+}
+
+###############################################################################
+# Network
+#   The subnet availability zone is randomly assigned from the region's zones.
+###############################################################################
+
+vpc_name          = "" # e.g. vpc-RPA
+vpc_cidr          = "" # e.g. 172.70.0.0/16
+subnet_name       = "" # e.g. subnet-RPA
+subnet_cidr       = "" # e.g. 172.70.7.0/24
+subnet_gateway_ip = "" # e.g. 172.70.7.1
+
+###############################################################################
+# Security
+###############################################################################
+
+security_group_name        = "" # e.g. sg-default
+security_group_description = "" # e.g. Application security group
+
+enable_ssh = true
+# Source CIDR for SSH ingress. Defaults to 0.0.0.0/0 (allow from anywhere) when
+# not set; set a narrower CIDR to restrict access.
+# ssh_source_cidr = "0.0.0.0/0"
+
+enable_rdp = true
+# rdp_source_cidr = "0.0.0.0/0"
+
+###############################################################################
+# Storage (SFS Turbo)  -- 2 file systems
+#   The availability zone is randomly assigned from the region's zones.
+###############################################################################
+
+sfs_turbo_instances = {
+  sfs-turbo-01 = {
+    name       = "" # e.g. sfs-turbo-01
+    share_type = "" # STANDARD or PERFORMANCE
+    size       = 0  # capacity in GB (minimum 500)
+  }
+  sfs-turbo-02 = {
+    name       = "" # e.g. sfs-turbo-02
+    share_type = "" # STANDARD or PERFORMANCE
+    size       = 0  # capacity in GB (minimum 500)
+  }
+}
+
+###############################################################################
+# Compute (ECS)  -- 6 instances
+#
+# For each instance:
+#   - the flavor is looked up dynamically from vcpu_count + memory_gb
+#   - the image is looked up dynamically from image_name (name pattern/regex)
+#   - the availability zone is randomly assigned from the region's zones
+# Set EITHER a password (in ecs_admin_passwords below) OR a key_pair.
+###############################################################################
+
+ecs_instances = {
+  ecs-1 = {
+    name             = "" # e.g. RPA1
+    vcpu_count       = 0 # e.g. 2
+    memory_gb        = 0 # e.g. 4
+    image_name       = "" # e.g. Ubuntu 22.04 server 64bit
+    system_disk_type = "" # SSD, GPSSD, SAS, ESSD, ...
+    system_disk_size = 0 # GB
+    fixed_ip         = "" # static private IP within the subnet
+    # performance_type = "computingv3" # optional: normal, computingv3, highmem, ...
+    # key_pair = "my-keypair" # set this OR a password below
+  }
+  ecs-2 = {
+    name             = ""
+    vcpu_count       = 0
+    memory_gb        = 0
+    image_name       = ""
+    system_disk_type = ""
+    system_disk_size = 0
+    fixed_ip         = ""
+    # key_pair = ""
+  }
+  ecs-3 = {
+    name             = ""
+    vcpu_count       = 0
+    memory_gb        = 0
+    image_name       = ""
+    system_disk_type = ""
+    system_disk_size = 0
+    fixed_ip         = ""
+    # key_pair = ""
+  }
+  ecs-4 = {
+    name             = ""
+    vcpu_count       = 0
+    memory_gb        = 0
+    image_name       = ""
+    system_disk_type = ""
+    system_disk_size = 0
+    fixed_ip         = ""
+    # key_pair = ""
+  }
+  ecs-5 = {
+    name             = ""
+    vcpu_count       = 0
+    memory_gb        = 0
+    image_name       = ""
+    system_disk_type = ""
+    system_disk_size = 0
+    fixed_ip         = ""
+    # key_pair = ""
+  }
+  ecs-6 = {
+    name             = ""
+    vcpu_count       = 0
+    memory_gb        = 0
+    image_name       = ""
+    system_disk_type = ""
+    system_disk_size = 0
+    fixed_ip         = ""
+    # key_pair = ""
+  }
+}
+
+# Sensitive admin passwords, keyed by the same key as ecs_instances.
+# Set a password for any instance that should use password login instead of a
+# key pair. Leave an entry out to use the key pair instead.
+ecs_admin_passwords = {
+  # ecs-1 = "your-secret-password"
+  # ecs-2 = "your-secret-password"
+}
+
+###############################################################################
+# VPN
+#   The gateway availability zones are queried from the
+#   huaweicloud_vpn_gateway_availability_zones data source so only zones that
+#   support the requested flavor are used.
+###############################################################################
+
+vpn_gateway_name = "" # e.g. vpn-gw-public-01
+vpn_flavor       = "" # Basic, Professional1, Professional2 or GM
+vpn_ha_mode      = "" # active-active or active-standby
+
+vpn_local_subnets = [""] # e.g. ["172.70.0.0/16"]
+
+eip_type        = "" # 5_bgp or 5_sbgp
+eip_charge_mode = "" # traffic or bandwith
+
+eip_1_bandwidth_name = ""
+eip_1_bandwidth_size = 0 # Mbit/s
+eip_2_bandwidth_name = ""
+eip_2_bandwidth_size = 0 # Mbit/s
